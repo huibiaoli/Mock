@@ -230,6 +230,16 @@ Util.extend(MockXMLHttpRequest.prototype, {
                 } catch (e) {}
             }
 
+            // 这里的核心问题就是没考虑到在open以后去修改属性 比如axios修改responseType的行为就在open之后
+            Object.defineProperty(that, 'responseType', {
+                get() {
+                return xhr.responseType
+                },
+                set(v) {
+                return (xhr.responseType = v)
+                }
+            })
+
             return
         }
 
