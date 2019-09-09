@@ -4,23 +4,23 @@ var webpack = require("webpack")
 var connect = require('gulp-connect')
 var mochaPhantomJS = require('gulp-mocha-phantomjs')
 var exec = require('child_process').exec
-
+var path = require('path')
 var istanbul = require('gulp-istanbul')
 var mocha = require('gulp-mocha')
 var coveralls = require('gulp-coveralls')
 
-// 
+//
 gulp.task('hello', function() {
     console.log((function() {
         /*
-___  ___              _        _      
-|  \/  |             | |      (_)     
-| .  . |  ___    ___ | | __    _  ___ 
+___  ___              _        _
+|  \/  |             | |      (_)
+| .  . |  ___    ___ | | __    _  ___
 | |\/| | / _ \  / __|| |/ /   | |/ __|
 | |  | || (_) || (__ |   <  _ | |\__ \
 \_|  |_/ \___/  \___||_|\_\(_)| ||___/
-                             _/ |     
-                            |__/    
+                             _/ |
+                            |__/
         */
     }).toString().split('\n').slice(2, -2).join('\n') + '\n')
 })
@@ -58,7 +58,7 @@ gulp.task("webpack", function( /*callback*/ ) {
     webpack({
         entry: './src/mock.js',
         output: {
-            path: './dist',
+            path: path.resolve(__dirname, 'dist'),
             filename: 'mock.js',
             library: 'Mock',
             libraryTarget: 'umd'
@@ -71,7 +71,7 @@ gulp.task("webpack", function( /*callback*/ ) {
         entry: './src/mock.js',
         devtool: 'source-map',
         output: {
-            path: './dist',
+            path: path.resolve(__dirname, 'dist'),
             filename: 'mock-min.js',
             library: 'Mock',
             libraryTarget: 'umd'
@@ -152,7 +152,7 @@ gulp.task('coveralls', ['istanbul'], function() {
         .pipe(coveralls())
 })
 
-// 
+//
 gulp.task('publish', function() {
     var child_process = require('child_process')
     child_process.exec('ls', function(error, stdout, stderr) {
