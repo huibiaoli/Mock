@@ -1,8 +1,8 @@
 {
-  "name": "mockjs2",
+  "name": "@huibiaoli/mockjs",
   "title": "Mock.js2",
   "description": "生成随机数据 & 拦截 Ajax 请求 mod版",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "homepage": "http://mockjs.com/",
   "keywords": [
     "mock",
@@ -41,7 +41,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sendya/Mock.git"
+    "url": "git://github.com/huibiaoli/Mock.git"
   },
   "main": "./dist/mock.js",
   "scripts": {
