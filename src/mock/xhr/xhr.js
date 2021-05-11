@@ -303,6 +303,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
 
             that.status = that.custom.options.status || 200
             that.statusText = HTTP_STATUS_CODES[that.status]
+            that.custom.responseHeaders = Util.extend(that.custom.responseHeaders, that.custom.options.headers)
 
             that.readyState = MockXMLHttpRequest.DONE
             that.dispatchEvent(new Event('readystatechange' /*, false, false, that*/ ))
@@ -451,6 +452,8 @@ function convert(item, options) {
         // _status 控制返回状态码
         data._status && data._status !== 0 && (options.status = data._status)
         delete data._status
+        data._headers && (options.headers = data._headers)
+        delete data._headers
         return data
     }
     return MockXMLHttpRequest.Mock.mock(item.template)
