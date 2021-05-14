@@ -45,7 +45,8 @@
  */
 
 var Util = require('../util')
-var rgx = require('regexparam')
+var rgx = require('regexparam').default
+var Url = require('url-parse')
 
 // 备份原生 XMLHttpRequest
 window._XMLHttpRequest = window.XMLHttpRequest
@@ -448,6 +449,15 @@ function find(options) {
 
             if (expected.indexOf('/') === 0) {
                 return rgx(expected).pattern.test(actual)
+            }
+
+            if (expected.indexOf('http') === 0) {
+                var expectedUrl = new Url(expected)
+                var actualUrl = new Url(actual)
+                return (
+                    expectedUrl.origin === actualUrl.origin &&
+                    rgx(expectedUrl.pathname).pattern.test(actualUrl.pathname)
+                )
             }
         }
         if (Util.type(expected) === 'regexp') {
