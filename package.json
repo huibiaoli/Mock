@@ -2,7 +2,7 @@
   "name": "@huibiaoli/mockjs",
   "title": "Mock.js2",
   "description": "生成随机数据 & 拦截 Ajax 请求 mod版",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "homepage": "http://mockjs.com/",
   "keywords": [
     "mock",
@@ -11,7 +11,8 @@
   ],
   "author": "nuysoft@gmail.com",
   "dependencies": {
-    "commander": "3.0.2"
+    "commander": "3.0.2",
+    "regexparam": "^1.3.0"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",
@@ -47,7 +48,7 @@
   "scripts": {
     "test": "gulp mocha",
     "coveralls": "gulp coveralls",
-    "build": "webpack --env=prod --progress --colors --hide-modules"
+    "build": "gulp build"
   },
   "bin": {
     "random": "bin/random"

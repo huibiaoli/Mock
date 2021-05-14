@@ -8172,6 +8172,7 @@ module.exports = __webpack_require__(28)
  */
 
 var Util = __webpack_require__(0)
+var rgx = __webpack_require__(29)
 
 // 备份原生 XMLHttpRequest
 window._XMLHttpRequest = window.XMLHttpRequest
@@ -8552,21 +8553,41 @@ function find(options) {
     for (var sUrlType in MockXMLHttpRequest.Mock._mocked) {
         var item = MockXMLHttpRequest.Mock._mocked[sUrlType]
         if (
-            (!item.rurl || match(item.rurl, options.url)) &&
-            (!item.rtype || match(item.rtype, options.type.toLowerCase()))
+            (!item.rurl || matchUrl(item.rurl, options.url)) &&
+            (!item.rtype || matchType(item.rtype, options.type.toLowerCase()))
         ) {
             // console.log('[mock]', options.url, '>', item.rurl)
             return item
         }
     }
 
-    function match(expected, actual) {
+    function matchUrl(expected, actual) {
         if (Util.type(expected) === 'string') {
-            return expected === actual
+            if (expected === actual) {
+                return true
+            }
+
+            // expected: /hello/world
+            // actual: /hello/world?type=1
+            if (actual.indexOf(expected) === 0 && actual[expected.length] === '?') {
+                return true
+            }
+
+            if (expected.indexOf('/') === 0) {
+                return rgx(expected).pattern.test(actual)
+            }
         }
         if (Util.type(expected) === 'regexp') {
             return expected.test(actual)
         }
+        return false
+    }
+
+    function matchType(expected, actual) {
+        if (Util.type(expected) === 'string' || Util.type(expected) === 'regexp') {
+            return new RegExp(expected, 'i').test(actual)
+        }
+        return false
     }
 
 }
@@ -8587,6 +8608,40 @@ function convert(item, options) {
 }
 
 module.exports = MockXMLHttpRequest
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony default export */ __webpack_exports__["default"] = (function (str, loose) {
+	if (str instanceof RegExp) return { keys:false, pattern:str };
+	var c, o, tmp, ext, keys=[], pattern='', arr = str.split('/');
+	arr[0] || arr.shift();
+
+	while (tmp = arr.shift()) {
+		c = tmp[0];
+		if (c === '*') {
+			keys.push('wild');
+			pattern += '/(.*)';
+		} else if (c === ':') {
+			o = tmp.indexOf('?', 1);
+			ext = tmp.indexOf('.', 1);
+			keys.push( tmp.substring(1, !!~o ? o : !!~ext ? ext : tmp.length) );
+			pattern += !!~o && !~ext ? '(?:/([^/]+?))?' : '/([^/]+?)';
+			if (!!~ext) pattern += (!!~o ? '?' : '') + '\\' + tmp.substring(ext);
+		} else {
+			pattern += '/' + tmp;
+		}
+	}
+
+	return {
+		keys: keys,
+		pattern: new RegExp('^' + pattern + (loose ? '(?=$|\/)' : '\/?$'), 'i')
+	};
+});
 
 
 /***/ })
