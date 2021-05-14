@@ -2,7 +2,7 @@
   "name": "@huibiaoli/mockjs",
   "title": "Mock.js2",
   "description": "生成随机数据 & 拦截 Ajax 请求 mod版",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "homepage": "http://mockjs.com/",
   "keywords": [
     "mock",
