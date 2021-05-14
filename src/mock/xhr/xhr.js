@@ -45,6 +45,7 @@
  */
 
 var Util = require('../util')
+var rgx = require('regexparam')
 
 // 备份原生 XMLHttpRequest
 window._XMLHttpRequest = window.XMLHttpRequest
@@ -425,21 +426,41 @@ function find(options) {
     for (var sUrlType in MockXMLHttpRequest.Mock._mocked) {
         var item = MockXMLHttpRequest.Mock._mocked[sUrlType]
         if (
-            (!item.rurl || match(item.rurl, options.url)) &&
-            (!item.rtype || match(item.rtype, options.type.toLowerCase()))
+            (!item.rurl || matchUrl(item.rurl, options.url)) &&
+            (!item.rtype || matchType(item.rtype, options.type.toLowerCase()))
         ) {
             // console.log('[mock]', options.url, '>', item.rurl)
             return item
         }
     }
 
-    function match(expected, actual) {
+    function matchUrl(expected, actual) {
         if (Util.type(expected) === 'string') {
-            return expected === actual
+            if (expected === actual) {
+                return true
+            }
+
+            // expected: /hello/world
+            // actual: /hello/world?type=1
+            if (actual.indexOf(expected) === 0 && actual[expected.length] === '?') {
+                return true
+            }
+
+            if (expected.indexOf('/') === 0) {
+                return rgx(expected).pattern.test(actual)
+            }
         }
         if (Util.type(expected) === 'regexp') {
             return expected.test(actual)
         }
+        return false
+    }
+
+    function matchType(expected, actual) {
+        if (Util.type(expected) === 'string' || Util.type(expected) === 'regexp') {
+            return new RegExp(expected, 'i').test(actual)
+        }
+        return false
     }
 
 }
